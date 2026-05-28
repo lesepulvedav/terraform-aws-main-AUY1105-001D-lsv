@@ -2,6 +2,11 @@
 
 Este archivo contiene los cambios realizados en el proyecto de infraestructura como código utilizando Terraform. Sigue el formato Keep a Changelog y respeta la semántica de versiones Semantic Versioning.
 
+[1.0.0]
+Agregado
+
+Se hace la carga del repositorio en su versión funcional
+
 [0.1.0]
 Agregado
 
