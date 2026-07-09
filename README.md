@@ -1,79 +1,83 @@
-# ev2codigo
+Este documento refleja las mejores prácticas para proyectos de infraestructura como código (IaC), destacando los módulos de AWS y las integraciones de integración continua (CI/CD) que tienes configuradas.
 
-Proyecto de infraestructura como código usando Terraform y módulos reutilizables.
+```markdown
+# Terraform AWS Infrastructure - AUY1105-001D-lsv-develop
 
-## Descripción
+Este repositorio contiene la configuración de Infraestructura como Código (IaC) utilizando Terraform para provisionar y administrar de manera automatizada recursos en AWS. El proyecto está diseñado con una arquitectura modular para facilitar la escalabilidad, el mantenimiento y la reutilización del código.
 
-Repositorio Terraform modular que define la infraestructura principal a través de módulos para VPC, S3, EC2 y ALB. El archivo raíz `main.tf` orquesta la composición de los módulos.
+## 🏗️ Arquitectura y Módulos
 
-## Estructura
+El proyecto está dividido en los siguientes módulos principales dentro del directorio `/modules`:
 
-- `main.tf` - Entrada principal que monta los módulos.
-- `modules/vpc_module/` - Módulo de red (VPC, subnets, route tables).
-- `modules/s3_module/` - Módulo para buckets S3.
-- `modules/ec2_module/` - Módulo para instancias EC2.
-- `modules/alb_module/` - Módulo para Application Load Balancer.
+*   **`vpc_module`**: Configuración de la red base, incluyendo la Virtual Private Cloud (VPC), subredes públicas/privadas, tablas de enrutamiento y gateways.
+*   **`ec2_module`**: Aprovisionamiento de instancias de cómputo EC2, configuraciones de seguridad y perfiles de instancia.
+*   **`alb_module`**: Configuración del Application Load Balancer (ALB), target groups y listeners para distribuir el tráfico de manera eficiente.
+*   **`s3_module`**: Creación y gestión de buckets S3 para almacenamiento de objetos, políticas de bucket y versionado.
 
-## Requisitos
+## ⚙️ Requisitos Previos
 
-- Terraform >= 0.13 (recomendado usar 1.x).
-- Proveedor de cloud configurado (p. ej. credenciales AWS en `~/.aws/credentials`).
-- `aws` CLI (opcional, para ver/validar recursos fuera de Terraform).
+Antes de ejecutar este proyecto, asegúrate de tener instalado y configurado lo siguiente:
+*   [Terraform](https://www.terraform.io/downloads.html) (v1.x o superior recomendado).
+*   [AWS CLI](https://aws.amazon.com/cli/) configurado con las credenciales adecuadas.
+*   Permisos necesarios en AWS para aprovisionar VPCs, EC2, ALB y S3.
 
-## Uso rápido
+## 🚀 Uso y Despliegue
 
-1. Inicializar el proyecto:
+Los despliegues se manejan por entorno utilizando archivos de variables específicos. Actualmente, el entorno de desarrollo está configurado en `dev.tfvars`.
 
-```bash
-terraform init
+1. **Inicializar el directorio de trabajo:**
+   ```bash
+   terraform init
+
 ```
 
-2. Validar y formatear:
-
+2. **Generar el plan de ejecución:**
+Revisa los cambios que se aplicarán antes de confirmarlos, guardando el output en un archivo (como se observa en tu `plan-dev.out`):
 ```bash
-terraform fmt -recursive
-terraform validate
+terraform plan -var-file="dev.tfvars" -out="plan-dev.out"
+
 ```
 
-3. Planear los cambios:
 
+3. **Aplicar la infraestructura:**
+Ejecuta el plan previamente guardado:
 ```bash
-terraform plan -out=tfplan
+terraform apply "plan-dev.out"
+
 ```
 
-4. Aplicar:
 
-```bash
-terraform apply tfplan
+
+## 🔄 CI/CD y Automatización (GitHub Actions)
+
+El ciclo de vida de la infraestructura está automatizado mediante flujos de trabajo de GitHub Actions ubicados en `.github/workflows/`:
+
+* **`terraform.yml` / `main.yml**`: Automatiza las fases de `terraform fmt`, `init`, `plan` y `apply` dependiendo de la rama en la que se integren los cambios.
+* **`checkov.yml`**: Integra escaneos de seguridad estática con Checkov para garantizar que las configuraciones de Terraform cumplan con las políticas de seguridad y cumplimiento antes de ser desplegadas.
+
+## 📂 Estructura del Repositorio
+
+```text
+.
+├── .github/workflows/       # Pipelines de CI/CD (Checkov, Terraform, Main)
+├── modules/                 # Módulos reutilizables de Terraform
+│   ├── alb_module/          # Módulo de Load Balancer
+│   ├── ec2_module/          # Módulo de Instancias
+│   ├── s3_module/           # Módulo de Almacenamiento
+│   └── vpc_module/          # Módulo de Redes
+├── .gitignore               # Archivos ignorados por Git
+├── .terraform.lock.hcl      # Bloqueo de dependencias de proveedores
+├── CHANGELOG.md             # Historial de cambios del proyecto
+├── dev.tfvars               # Variables para el entorno de desarrollo
+├── import.tf                # Bloques para importar recursos existentes
+├── main.tf                  # Archivo principal de ejecución
+├── variables.tf             # Declaración de variables globales
+└── README.md                # Documentación del proyecto
+
 ```
 
-Si quieres aplicar directamente:
-
-```bash
-terraform apply -auto-approve
 ```
 
-## Variables y outputs
+Si necesitas agregar detalles específicos sobre parámetros requeridos en tu archivo `variables.tf` o instrucciones particulares sobre cómo manejar los estados remotos, dime y lo ajustamos.
 
-Los módulos exponen variables y outputs en sus archivos `variables.tf` y `outputs.tf`. Revisa cada módulo para conocer las variables requeridas y sus valores por defecto.
-
-Recomendación: revisar [modules/vpc_module/README.md](modules/vpc_module/README.md) y los README de cada módulo para detalles específicos.
-
-## Buenas prácticas
-
-- Usa workspaces o estados remotos para ambientes (dev/stage/prod).
-- No versionar archivos de estado (`*.tfstate`) ni credenciales.
-- Lockea versiones de proveedores en `required_providers`.
-
-## Contribuir
-
-- Abrir issues para sugerencias o errores.
-- Enviar pull requests con descripciones claras y pruebas cuando sea posible.
-
-## Licencia
-
-Sin licencia especificada. Añade un archivo `LICENSE` si quieres publicar bajo una licencia concreta.
-
----
-
-Si quieres que incluya ejemplos de variables, outputs o comandos específicos para AWS, dímelo y los añado.
+```

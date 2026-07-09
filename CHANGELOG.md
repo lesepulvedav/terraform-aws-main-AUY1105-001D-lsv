@@ -2,6 +2,12 @@
 
 Este archivo contiene los cambios realizados en el proyecto de infraestructura como código utilizando Terraform. Sigue el formato Keep a Changelog y respeta la semántica de versiones Semantic Versioning.
 
+commit 5e03f406e0e6d4757f241c9bd341c5a5631e01c8 (HEAD -> develop, tag: v1.1.0, origin/develop)
+Author: lesepulvedav <le.sepulveda@duocuc.cl>
+Date:   Thu Jul 9 13:39:27 2026 -0400
+
+    Carga de archivo import.tf
+    
 commit 79a30e3bb94362e37fd77846866615b3de122f00 (HEAD -> develop, tag: v1.0.2, origin/develop)
 Author: lesepulvedav <le.sepulveda@duocuc.cl>
 Date:   Wed Jul 1 04:39:23 2026 -0400
