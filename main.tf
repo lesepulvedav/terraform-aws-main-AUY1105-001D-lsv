@@ -37,7 +37,7 @@ module "s3_module" {
 }
 
 module "alb_module" {
-  source             = "git::https://github.com/lesepulvedav/terraform-aws-alb-AUY1105-001D-lsv.git?ref=v0.2.1"
+  source             = "git::https://github.com/lesepulvedav/terraform-aws-alb-AUY1105-001D-lsv.git?ref=v0.2.2"
   subnets            = [module.vpc_module.public_subnet_id, module.vpc_module.public_subnet_2_id]
   security_group_ids = [module.vpc_module.security_group_alb_id]
   vpc_id             = module.vpc_module.vpc_id
